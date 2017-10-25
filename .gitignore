@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Renamer/bin/Debug
+/Renamer/obj/Debug
+/Renamer/bin/Release
+/Renamer/obj/Release
+/.vs/Renamer/v14/.suo
+bin
+obj

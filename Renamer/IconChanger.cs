@@ -32,6 +32,9 @@ namespace regexKSP
 
     public class IconChanger : MonoBehaviour
     {
+
+        private bool preserveIcons = false;
+
         public void OnGUIAstronautComplexSpawn()
         {
             StartCoroutine(CallbackUtil.DelayedCallback(1, BuildAstronautComplex));
@@ -52,23 +55,39 @@ namespace regexKSP
 
         public void BuildAstronautComplex()
         {
-            KSP.UI.CrewListItem cic;
-            KSP.UI.UIList scroll;
-
-            UnityEngine.Object[] objs = Resources.FindObjectsOfTypeAll(typeof(KSP.UI.Screens.AstronautComplex));
-            if (objs.Length < 1) { return; }
-            KSP.UI.Screens.AstronautComplex complex = (KSP.UI.Screens.AstronautComplex)objs[0];
-            FieldInfo[] scrolls = typeof(KSP.UI.Screens.AstronautComplex).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(c => c.FieldType == typeof(KSP.UI.UIList)).ToArray();
-
-            for (int i = 0; i < scrolls.Length; i++)
+            ConfigNode data = null;
+            foreach (ConfigNode node in GameDatabase.Instance.GetConfigNodes("KERBALRENAMER"))
             {
-                scroll = (KSP.UI.UIList)scrolls[i].GetValue(complex);
-                for (int j = 0; j < scroll.Count; j++)
+                data = node;
+            }
+
+            bool btemp = true;
+            if (bool.TryParse(data.GetValue("preserveIcons"), out btemp))
+            {
+                preserveIcons = btemp;
+            }
+
+            if (!preserveIcons)
+            {
+
+                KSP.UI.CrewListItem cic;
+                KSP.UI.UIList scroll;
+
+                UnityEngine.Object[] objs = Resources.FindObjectsOfTypeAll(typeof(KSP.UI.Screens.AstronautComplex));
+                if (objs.Length < 1) { return; }
+                KSP.UI.Screens.AstronautComplex complex = (KSP.UI.Screens.AstronautComplex)objs[0];
+                FieldInfo[] scrolls = typeof(KSP.UI.Screens.AstronautComplex).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(c => c.FieldType == typeof(KSP.UI.UIList)).ToArray();
+
+                for (int i = 0; i < scrolls.Length; i++)
                 {
-                    KSP.UI.UIListItem listItem = scroll.GetUilistItemAt(j);
-                    cic = listItem.GetComponent<KSP.UI.CrewListItem>();
-                    cic.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildAstronautComplex));
-                    changeKerbalIcon(cic);
+                    scroll = (KSP.UI.UIList)scrolls[i].GetValue(complex);
+                    for (int j = 0; j < scroll.Count; j++)
+                    {
+                        KSP.UI.UIListItem listItem = scroll.GetUilistItemAt(j);
+                        cic = listItem.GetComponent<KSP.UI.CrewListItem>();
+                        cic.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildAstronautComplex));
+                        changeKerbalIcon(cic);
+                    }
                 }
             }
         }
@@ -79,24 +98,41 @@ namespace regexKSP
             {
                 return;
             }
-            KSP.UI.CrewAssignmentDialog dialogue = KSP.UI.CrewAssignmentDialog.Instance;
-            KSP.UI.CrewListItem cic;
 
-            for (int j = 0; j < dialogue.scrollListAvail.Count; j++)
+            ConfigNode data = null;
+            foreach (ConfigNode node in GameDatabase.Instance.GetConfigNodes("KERBALRENAMER"))
             {
-                KSP.UI.UIListItem listItem = dialogue.scrollListAvail.GetUilistItemAt(j);
-                cic = listItem.GetComponent<KSP.UI.CrewListItem>();
-                cic.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildCrewAssignmentDialogue));
-                changeKerbalIcon(cic);
+                data = node;
             }
-            for (int j = 0; j < dialogue.scrollListCrew.Count; j++)
+
+            bool btemp = true;
+            if (bool.TryParse(data.GetValue("preserveIcons"), out btemp))
             {
-                KSP.UI.UIListItem listItem = dialogue.scrollListCrew.GetUilistItemAt(j);
-                cic = listItem.GetComponent<KSP.UI.CrewListItem>();
-                if ((object)cic != null)
+                preserveIcons = btemp;
+            }
+
+            if (!preserveIcons)
+            {
+
+                KSP.UI.CrewAssignmentDialog dialogue = KSP.UI.CrewAssignmentDialog.Instance;
+                KSP.UI.CrewListItem cic;
+
+                for (int j = 0; j < dialogue.scrollListAvail.Count; j++)
                 {
+                    KSP.UI.UIListItem listItem = dialogue.scrollListAvail.GetUilistItemAt(j);
+                    cic = listItem.GetComponent<KSP.UI.CrewListItem>();
                     cic.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildCrewAssignmentDialogue));
                     changeKerbalIcon(cic);
+                }
+                for (int j = 0; j < dialogue.scrollListCrew.Count; j++)
+                {
+                    KSP.UI.UIListItem listItem = dialogue.scrollListCrew.GetUilistItemAt(j);
+                    cic = listItem.GetComponent<KSP.UI.CrewListItem>();
+                    if ((object)cic != null)
+                    {
+                        cic.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildCrewAssignmentDialogue));
+                        changeKerbalIcon(cic);
+                    }
                 }
             }
         }
