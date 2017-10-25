@@ -47,7 +47,14 @@ namespace regexKSP {
 		public string cultureDescriptor = "Culture";
 		private Culture[] cultures = {};
 
-	    public static KerbalRenamer Instance {
+        private List<string> originalNames = new List<string> {
+                "Jebediah Kerman",
+                "Bill Kerman",
+                "Bob Kerman",
+                "Valentina Kerman"
+            };
+
+        public static KerbalRenamer Instance {
 	        get {
 				if((object)rInstance == null) {
 					rInstance = (new GameObject("RenamerContainer")).AddComponent<KerbalRenamer>();
@@ -116,17 +123,19 @@ namespace regexKSP {
 			cultures = ctemp.ToArray();
 
 	        GameEvents.onKerbalAdded.Add(new EventData<ProtoCrewMember>.OnEvent(OnKerbalAdded));
-		}
+            GameEvents.onGameStateCreated.Add(new EventData<Game>.OnEvent(OnGameCreated));
+        }
 
-		public void OnKerbalAdded(ProtoCrewMember kerbal)
+        void OnGameCreated(Game game)
+        {
+            if (!preserveOriginals)
+            {
+                RerollOriginals();
+            }
+        }
+
+        public void OnKerbalAdded(ProtoCrewMember kerbal)
 		{
-
-			List<string> originalNames = new List<string> {
-				"Jebediah Kerman",
-				"Bill Kerman",
-				"Bob Kerman",
-				"Valentina Kerman"
-			};
 			if (preserveOriginals) {
 				if (originalNames.Contains(kerbal.name)) {
 					return;
@@ -134,18 +143,26 @@ namespace regexKSP {
 			}
 			else // see if any of the originals are still around
 			{
-				foreach (var originalKerbalName in originalNames) {
-					if (HighLogic.CurrentGame.CrewRoster[originalKerbalName] != null) {
-						var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];
-						var origTrait = origKerbal.trait;
-						RerollKerbal(origKerbal);
-						KerbalRoster.SetExperienceTrait(origKerbal, origTrait);
-					}
-				}
+                RerollOriginals();	
 			}
 
 			RerollKerbal(kerbal);
 		}
+        
+
+        private void RerollOriginals()
+        {
+            foreach (var originalKerbalName in originalNames)
+            {
+                if (HighLogic.CurrentGame.CrewRoster[originalKerbalName] != null)
+                {
+                    var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];
+                    var origTrait = origKerbal.trait;
+                    RerollKerbal(origKerbal);
+                    KerbalRoster.SetExperienceTrait(origKerbal, origTrait);
+                }
+            }
+        }
 
 		private void RerollKerbal(ProtoCrewMember kerbal)
 		{
