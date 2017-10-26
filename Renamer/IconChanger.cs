@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
 
-namespace regexKSP
+namespace Renamer
 {
 
     [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
@@ -153,12 +153,27 @@ namespace regexKSP
             {
                 return;
             }
+
+            ConfigNode data = null;
+            foreach (ConfigNode node in GameDatabase.Instance.GetConfigNodes("KERBALRENAMER"))
+            {
+                data = node;
+            }
+            List<Culture> ctemp = new List<Culture>();
+            ConfigNode[] cultureclub = data.GetNodes("Culture");
+            for (int i = 0; i < cultureclub.Length; i++)
+            {
+                Culture c = new Culture(cultureclub[i]);
+                ctemp.Add(c);
+            }
+            Culture[] cultures = ctemp.ToArray();
+
             FlightLog.Entry flight = cic.GetCrewRef().flightLog.Entries.FirstOrDefault(e => e.type == KerbalRenamer.Instance.cultureDescriptor);
             if ((object)flight != null)
             {
                 FieldInfo fi = typeof(KSP.UI.CrewListItem).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(c => c.FieldType == typeof(RawImage));
                 RawImage foo = (RawImage)fi.GetValue(cic);
-                Culture culture = KerbalRenamer.Instance.getCultureByName(flight.target);
+                Culture culture = Randomizer.getCultureByName(flight.target, cultures );
                 if ((object)culture != null)
                 {
                     foo.texture = (Texture)GameDatabase.Instance.GetTexture("KerbalRenamer/Icons/" + culture.cultureName, false);

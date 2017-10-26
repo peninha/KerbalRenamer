@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
 
-namespace regexKSP
+namespace Renamer
 {
     public class Culture
     {
