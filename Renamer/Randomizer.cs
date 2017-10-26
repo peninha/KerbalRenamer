@@ -39,18 +39,24 @@ namespace Renamer
     public class Randomizer
     {
 
+        public static void RerollKerbal(ref ProtoCrewMember kerbal, Culture[] cultures)
+        {
+            RerollKerbal(ref kerbal, RenamerCustomParams.RerollStatsEnabled, RenamerCustomParams.BellCurveEnabled, RenamerCustomParams.DontInsultMeEnabled, RenamerCustomParams.GetBadassPercentage, RenamerCustomParams.GetFemalePercentage, cultures, RenamerCustomParams.PreserveOriginalTraitsEnabled);
+        }
+
         public static void RerollKerbal(ref ProtoCrewMember kerbal, bool generateNewStats, bool useBellCurveMethod, bool dontInsultMe, float badassPercent, float femalePercent, Culture[] cultures, bool keepRoles)
         {
             UnityEngine.Random.InitState(System.DateTime.Now.Millisecond * kerbal.name.GetHashCode());
 
-            if (generateNewStats)
+            if (kerbal.type == ProtoCrewMember.KerbalType.Crew || kerbal.type == ProtoCrewMember.KerbalType.Applicant)
             {
-                if (kerbal.type == ProtoCrewMember.KerbalType.Crew || kerbal.type == ProtoCrewMember.KerbalType.Applicant)
+                // generate some new stats
+                if (generateNewStats)
                 {
-                    // generate some new stats
                     kerbal.stupidity = rollStupidity(useBellCurveMethod, dontInsultMe);
                     kerbal.courage = rollCourage(useBellCurveMethod);
                     kerbal.isBadass = (UnityEngine.Random.Range(0.0f, 1.0f) < badassPercent);
+
 
                     float rand = UnityEngine.Random.Range(0.0f, 1.0f);
                     if (keepRoles)
@@ -73,7 +79,7 @@ namespace Renamer
                         }
                     }
 
-                    if (UnityEngine.Random.Range(0.0f, 1.0f) < femalePercent)
+                    if (UnityEngine.Random.Range(0.0f, 1.0f) <= femalePercent)
                     {
                         kerbal.gender = ProtoCrewMember.Gender.Female;
                     }

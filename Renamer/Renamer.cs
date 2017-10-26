@@ -38,13 +38,6 @@ namespace Renamer {
 	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
 	public class KerbalRenamer : MonoBehaviour {
 		public static KerbalRenamer rInstance = null;
-		private float badassPercent = 0.05f;
-		private float femalePercent = 0.5f;
-		private bool useBellCurveMethod = true;
-		private bool dontInsultMe = false;
-		private bool preserveOriginals = false;
-        private bool preserveOriginalTraits = false;
-		private bool generateNewStats = true;
 		public string cultureDescriptor = "Culture";
 		internal Culture[] cultures = {};
 
@@ -63,7 +56,6 @@ namespace Renamer {
 	            return rInstance;
 	        }
 	    }
-
        
         public void Awake()
         {
@@ -80,63 +72,7 @@ namespace Renamer {
                 return;
             }
 
-            List<Culture> ctemp = new List<Culture>();
-            if (data.HasValue("badassPercent"))
-            {
-                float ftemp = 0.0f;
-                if (float.TryParse(data.GetValue("badassPercent"), out ftemp))
-                {
-                    badassPercent = ftemp;
-                }
-            }
-            if (data.HasValue("femalePercent"))
-            {
-                float ftemp = 0.0f;
-                if (float.TryParse(data.GetValue("femalePercent"), out ftemp))
-                {
-                    femalePercent = ftemp;
-                }
-            }
-            if (data.HasValue("useBellCurveMethod"))
-            {
-                bool btemp = true;
-                if (bool.TryParse(data.GetValue("useBellCurveMethod"), out btemp))
-                {
-                    useBellCurveMethod = btemp;
-                }
-            }
-            if (data.HasValue("dontInsultMe"))
-            {
-                bool btemp = true;
-                if (bool.TryParse(data.GetValue("dontInsultMe"), out btemp))
-                {
-                    dontInsultMe = btemp;
-                }
-            }
-            if (data.HasValue("preserveOriginals"))
-            {
-                bool btemp = true;
-                if (bool.TryParse(data.GetValue("preserveOriginals"), out btemp))
-                {
-                    preserveOriginals = btemp;
-                }
-            }
-            if (data.HasValue("preserveOriginalTraits"))
-            {
-                bool btemp = true;
-                if (bool.TryParse(data.GetValue("preserveOriginalTraits"), out btemp))
-                {
-                    preserveOriginalTraits = btemp;
-                }
-            }
-            if (data.HasValue("generateNewStats"))
-            {
-                bool btemp = true;
-                if (bool.TryParse(data.GetValue("generateNewStats"), out btemp))
-                {
-                    generateNewStats = btemp;
-                }
-            }
+            List<Culture> ctemp = new List<Culture>();            
             if (data.HasValue("cultureDescriptor"))
             {
                 cultureDescriptor = data.GetValue("cultureDescriptor");
@@ -155,15 +91,12 @@ namespace Renamer {
 
         void OnGameCreated(Game game)
         {
-            //if (!preserveOriginals)
-            //{
-            //    RerollOriginals();
-            //}
+
         }
 
         public void OnKerbalAdded(ProtoCrewMember kerbal)
 		{
-			if (preserveOriginals) {
+			if (RenamerCustomParams.PreserveOriginal4Enabled) {
 				if (originalNames.Contains(kerbal.name)) {
 					return;
 				}
@@ -173,7 +106,7 @@ namespace Renamer {
                 RerollOriginals();
             }
 
-            Randomizer.RerollKerbal(ref kerbal,generateNewStats, useBellCurveMethod, dontInsultMe, badassPercent, femalePercent, cultures, preserveOriginalTraits);
+            Randomizer.RerollKerbal(ref kerbal, cultures);
 		}
         
 
@@ -183,13 +116,11 @@ namespace Renamer {
             {
                 if (HighLogic.CurrentGame.CrewRoster[originalKerbalName] != null)
                 {
-                    var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];
-                    var origTrait = origKerbal.trait;
-                    Randomizer.RerollKerbal(ref origKerbal, generateNewStats, useBellCurveMethod, dontInsultMe, badassPercent, femalePercent, cultures, preserveOriginalTraits);                    
-                    KerbalRoster.SetExperienceTrait(origKerbal, origTrait);
+                    var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];                    
+                    Randomizer.RerollKerbal(ref origKerbal, cultures);                    
                 }
             }
         }        
 	}
-    
+
 }
