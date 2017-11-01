@@ -82,29 +82,29 @@ namespace Renamer
 
         public void BuildCrewAssignmentDialogue()
         {
-            if ((object)KSP.UI.CrewAssignmentDialog.Instance == null)
+            if (KSP.UI.CrewAssignmentDialog.Instance == null)
             {
                 return;
             }
 
             KSP.UI.CrewAssignmentDialog dialogue = KSP.UI.CrewAssignmentDialog.Instance;
-            KSP.UI.CrewListItem cic;
+            KSP.UI.CrewListItem crewListItem;
 
             for (int j = 0; j < dialogue.scrollListAvail.Count; j++)
             {
                 KSP.UI.UIListItem listItem = dialogue.scrollListAvail.GetUilistItemAt(j);
-                cic = listItem.GetComponent<KSP.UI.CrewListItem>();
-                cic.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildCrewAssignmentDialogue));
-                changeKerbalIcon(cic);
+                crewListItem = listItem.GetComponent<KSP.UI.CrewListItem>();
+                crewListItem.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildCrewAssignmentDialogue));
+                changeKerbalIcon(crewListItem);
             }
             for (int j = 0; j < dialogue.scrollListCrew.Count; j++)
             {
                 KSP.UI.UIListItem listItem = dialogue.scrollListCrew.GetUilistItemAt(j);
-                cic = listItem.GetComponent<KSP.UI.CrewListItem>();
-                if ((object)cic != null)
+                crewListItem = listItem.GetComponent<KSP.UI.CrewListItem>();
+                if (crewListItem != null)
                 {
-                    cic.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildCrewAssignmentDialogue));
-                    changeKerbalIcon(cic);
+                    crewListItem.AddButtonInputDelegate(new UnityAction<KSP.UI.CrewListItem.ButtonTypes, KSP.UI.CrewListItem>(RebuildCrewAssignmentDialogue));
+                    changeKerbalIcon(crewListItem);
                 }
             }
         }
@@ -121,7 +121,7 @@ namespace Renamer
 
         private void changeKerbalIcon(KSP.UI.CrewListItem cic)
         {
-            if ((object)cic.GetCrewRef() == null)
+            if (cic.GetCrewRef() == null)
             {
                 return;
             }
@@ -141,14 +141,14 @@ namespace Renamer
             Culture[] cultures = ctemp.ToArray();
 
             FlightLog.Entry flight = cic.GetCrewRef().flightLog.Entries.FirstOrDefault(e => e.type == KerbalRenamer.Instance.cultureDescriptor);
-            if ((object)flight != null)
+            if (flight != null)
             {
                 FieldInfo fi = typeof(KSP.UI.CrewListItem).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(c => c.FieldType == typeof(RawImage));
-                RawImage foo = (RawImage)fi.GetValue(cic);
+                RawImage image = (RawImage)fi.GetValue(cic);
                 Culture culture = Randomizer.getCultureByName(flight.target, cultures);
-                if ((object)culture != null)
+                if (culture != null)
                 {
-                    foo.texture = (Texture)GameDatabase.Instance.GetTexture("KerbalRenamer/Icons/" + culture.cultureName, false);
+                    image.texture = (Texture)GameDatabase.Instance.GetTexture("KerbalRenamer/Icons/" + culture.cultureName, false);
                 }
             }
         }

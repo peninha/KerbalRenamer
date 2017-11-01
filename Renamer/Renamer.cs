@@ -50,7 +50,7 @@ namespace Renamer {
 
         public static KerbalRenamer Instance {
 	        get {
-				if((object)rInstance == null) {
+				if(rInstance == null) {
 					rInstance = (new GameObject("RenamerContainer")).AddComponent<KerbalRenamer>();
 				}
 	            return rInstance;
@@ -66,7 +66,7 @@ namespace Renamer {
             {
                 data = node;
             }
-            if ((object)data == null)
+            if (data == null)
             {
                 Debug.Log("KerbalRenamer: No config file found, thanks for playing.");
                 return;

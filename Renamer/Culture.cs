@@ -29,121 +29,63 @@ namespace Renamer
 
         public Culture(ConfigNode node)
         {
-            ConfigNode temp;
             string[] vals;
             if (node.HasValue("name"))
             {
                 cultureName = node.GetValue("name");
             }
-            if (node.HasNode("FFIRSTNAME1"))
+
+            foreach (ConfigNode childNode in node.nodes)
             {
-                temp = node.GetNode("FFIRSTNAME1");
-                vals = temp.GetValues("key");
+                vals = childNode.GetValues("key");
                 if (vals.Length > 0)
                 {
-                    fnames1 = vals;
-                }
-            }
-            if (node.HasNode("FFIRSTNAME2"))
-            {
-                temp = node.GetNode("FFIRSTNAME2");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    fnames2 = vals;
-                }
-            }
-            if (node.HasNode("FFIRSTNAME3"))
-            {
-                temp = node.GetNode("FFIRSTNAME3");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    fnames3 = vals;
-                }
-            }
-            if (node.HasNode("MFIRSTNAME1"))
-            {
-                temp = node.GetNode("MFIRSTNAME1");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    mnames1 = vals;
-                }
-            }
-            if (node.HasNode("MFIRSTNAME2"))
-            {
-                temp = node.GetNode("MFIRSTNAME2");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    mnames2 = vals;
-                }
-            }
-            if (node.HasNode("MFIRSTNAME3"))
-            {
-                temp = node.GetNode("MFIRSTNAME3");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    mnames3 = vals;
-                }
-            }
-            if (node.HasNode("LASTNAME1"))
-            {
-                temp = node.GetNode("LASTNAME1");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    lnames1 = vals;
-                }
-            }
-            if (node.HasNode("LASTNAME2"))
-            {
-                temp = node.GetNode("LASTNAME2");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    lnames2 = vals;
-                }
-            }
-            if (node.HasNode("LASTNAME3"))
-            {
-                temp = node.GetNode("LASTNAME3");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    lnames3 = vals;
-                }
-            }
-            if (node.HasNode("FLASTNAME1"))
-            {
-                temp = node.GetNode("FLASTNAME1");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    flnames1 = vals;
-                    femaleSurnamesExist = true;
-                }
-            }
-            if (node.HasNode("FLASTNAME2"))
-            {
-                temp = node.GetNode("FLASTNAME2");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    flnames2 = vals;
-                    femaleSurnamesExist = true;
-                }
-            }
-            if (node.HasNode("FLASTNAME3"))
-            {
-                temp = node.GetNode("FLASTNAME3");
-                vals = temp.GetValues("key");
-                if (vals.Length > 0)
-                {
-                    flnames3 = vals;
-                    femaleSurnamesExist = true;
+                    switch (childNode.name)
+                    {
+                        case "FFIRSTNAME1":
+                            fnames1 = vals;
+                            break;
+                        case "FFIRSTNAME2":
+                            fnames2 = vals;
+                            break;
+                        case "FFIRSTNAME3":
+                            fnames3 = vals;
+                            break;
+                        case "MFIRSTNAME1":
+                            mnames1 = vals;
+                            break;
+                        case "MFIRSTNAME2":
+                            mnames2 = vals;
+                            break;
+                        case "MFIRSTNAME3":
+                            mnames3 = vals;
+                            break;
+                        case "LASTNAME1":
+                            lnames1 = vals;
+                            break;
+                        case "LASTNAME2":
+                            lnames2 = vals;
+                            break;
+                        case "LASTNAME3":
+                            lnames3 = vals;
+                            break;
+                        case "FLASTNAME1":
+                            flnames1 = vals;
+                            break;
+                        case "FLASTNAME2":
+                            flnames2 = vals;
+                            break;
+                        case "FLASTNAME3":
+                            flnames3 = vals;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (childNode.name.StartsWith("FLASTNAME"))
+                    {
+                        femaleSurnamesExist = true;
+                    }
                 }
             }
         }
