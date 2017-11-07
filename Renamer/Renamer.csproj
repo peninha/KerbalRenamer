@@ -47,8 +47,8 @@
     <Compile Include="IconChanger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
-    <Compile Include="Renamer.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="KerbalRenamer.cs" />
+    <Compile Include="RenamerCustomParams.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
