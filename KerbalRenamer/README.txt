@@ -13,23 +13,27 @@ proper Russian names but it works well enough for my ignorant American ass.
 Also, because it renames /every/ Kerbal you won't get Jeb, Bill, Bob, or
 Valentina Kerman unless you configure the mod.
 
-The options in the config file are as follows:
+The options that control the randomization have been removed from the config.
+They are now set in the settings screen when you create a new game.  Those
+options are:
 
-preserveOriginals : If set to true will preserve Jeb, Bill, Bob, and
+Preserve Original 4: If set to true will preserve Jeb, Bill, Bob, and
     Valentina as the starting available crew. Defaults to false because I'm
 	sick of these assholes.
-generateNewStats : If true will generate new stats for all Kerbals, including
+Preserve Original Traits: If true, your first 4 Kerbals will have the same
+traits as Jeb, Bill, Bob, and Val.  Otherwise you might get 4 engineers...
+Reroll stats : If true will generate new stats for all Kerbals, including
     their profession.  Defaults to true.
-femalePercent : This is the chance to generate a female Kerbal anytime a new
+Female Percentage : This is the chance to generate a female Kerbal anytime a new
     Kerbal is generated.  Possible values are from 0.0 to 1.0.  Defaults to
 	0.5.  4Chan rejoice.
-badassPercent : The chance of generating a badass out of any given Kerbal.
+Badass Percentage : The chance of generating a badass out of any given Kerbal.
     Possible values are from 0.0 to 1.0.  Defaults to 0.05.
-useBellCurveMethod : If set to true, uses a (5d21 - 5) * 0.01 method to
+Use Bell Curve Method : If set to true, uses a (5d21 - 5) * 0.01 method to
     generate Kerbal Courage and Stupidity.  Otherwise generates a random number
     between 0.0 and 1.0.  This is intended to generate more average Kerbals
 	more often.  Defaults to true.
-dontInsultMe : If set to true along with useBellCurveMethod, only rolls 3d21
+Don't Insult Me : If set to true along with useBellCurveMethod, only rolls 3d21
     for Stupidity because astronauts~.  Defaults to false.
 
 You can alter the way the mod generates names by editing the KerbalRenamer.cfg
@@ -52,12 +56,6 @@ around with this one if you're wondering how to make this mod work for you.
 
 KERBALRENAMER
 {
-    preserveOriginals = false
-	generateNewStats = true
-    femalePercent = 0.5
-    badassPercent = 0.05
-    useBellCurveMethod = true
-    dontInsultMe = false
 
 	FFIRSTNAME1
 	{
