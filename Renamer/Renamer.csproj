@@ -30,21 +30,25 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\.local\share\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\.local\share\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\.local\share\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\Dependencies\1.4.3\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\Dependencies\1.4.3\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\Dependencies\1.4.3\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Culture.cs" />
+    <Compile Include="LogUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renamer.cs" />
+    <Compile Include="Randomizer.cs" />
+    <Compile Include="KerbalRenamer.cs" />
+    <Compile Include="RenamerCustomParams.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
