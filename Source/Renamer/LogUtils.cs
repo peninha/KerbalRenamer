@@ -8,7 +8,7 @@ namespace Renamer
 	class LogUtils
 	{
 		private const string logName = "KerbalRenamer";
-		private static bool enabled = true;
+		private static bool enabled = false;
 		public static void Log(params object[] message)
 		{
 			Log(Array.ConvertAll(message, item => item.ToString()));
