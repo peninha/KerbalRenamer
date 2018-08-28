@@ -1,0 +1,33 @@
+{
+  "NAME": "Kerbal Renamer",
+  "URL": "https://github.com/KSP-RO/KerbalRenamer",
+  "DOWNLOAD": "https://github.com/KSP-RO/KerbalRenamer/releases",
+  "GITHUB": {
+    "USERNAME": "KSP-RO",
+    "REPOSITORY": "KerbalRenamer"
+  },
+  "VERSION": {
+    "MAJOR": 1,
+    "MINOR": 1,
+    "PATCH": 1,
+    "BUILD": 0
+  },
+  "KSP_VERSION": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 5,
+    "BUILD": 0
+  },
+  "KSP_VERSION_MIN": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 0,
+    "BUILD": 0
+  },
+  "KSP_VERSION_MAX": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 99,
+    "BUILD": 0
+  }
+}
