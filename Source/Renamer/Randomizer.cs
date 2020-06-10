@@ -38,15 +38,15 @@ namespace Renamer
 {
     public class Randomizer
     {
-
         public static void RerollKerbal(ref ProtoCrewMember kerbal, Culture[] cultures)
         {
-            RerollKerbal(ref kerbal, RenamerCustomParams.RerollStatsEnabled, RenamerCustomParams.BellCurveEnabled, RenamerCustomParams.DontInsultMeEnabled, RenamerCustomParams.GetBadassPercentage, RenamerCustomParams.GetFemalePercentage, cultures, RenamerCustomParams.PreserveOriginalTraitsEnabled);
+            RerollKerbal(ref kerbal, RenamerCustomParams.RerollStatsEnabled, RenamerCustomParams.BellCurveEnabled, RenamerCustomParams.DontInsultMeEnabled,
+                         RenamerCustomParams.GetBadassPercentage, RenamerCustomParams.GetFemalePercentage, cultures, RenamerCustomParams.PreserveOriginalTraitsEnabled);
         }
 
         public static void RerollKerbal(ref ProtoCrewMember kerbal, bool generateNewStats, bool useBellCurveMethod, bool dontInsultMe, float badassPercent, float femalePercent, Culture[] cultures, bool keepRoles)
         {
-			LogUtils.Log("Rerolling kerbal ", kerbal.name);
+            LogUtils.Log("Rerolling kerbal ", kerbal.name);
             UnityEngine.Random.InitState(System.DateTime.Now.Millisecond * kerbal.name.GetHashCode());
 
             if (kerbal.type == ProtoCrewMember.KerbalType.Crew || kerbal.type == ProtoCrewMember.KerbalType.Applicant)
@@ -57,7 +57,6 @@ namespace Renamer
                     kerbal.stupidity = rollStupidity(useBellCurveMethod, dontInsultMe);
                     kerbal.courage = rollCourage(useBellCurveMethod);
                     kerbal.isBadass = (UnityEngine.Random.Range(0.0f, 1.0f) < badassPercent);
-
 
                     float rand = UnityEngine.Random.Range(0.0f, 1.0f);
                     if (keepRoles)
@@ -93,12 +92,11 @@ namespace Renamer
 
             string name = getName(kerbal, cultures);
 
-			LogUtils.Log("Renaming to ", name);
+            LogUtils.Log("Renaming to ", name);
             if (name.Length > 0)
             {
                 kerbal.ChangeName(name);
             }
-
         }
 
         public static string getName(ProtoCrewMember c, Culture[] cultures)
@@ -242,5 +240,4 @@ namespace Renamer
             }
         }
     }
-
 }

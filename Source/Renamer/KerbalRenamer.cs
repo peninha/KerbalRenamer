@@ -34,29 +34,35 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
 
-namespace Renamer {
-	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
-	public class KerbalRenamer : MonoBehaviour {
-		public static KerbalRenamer rInstance = null;
-		public string cultureDescriptor = "Culture";
-		internal Culture[] cultures = {};
+namespace Renamer
+{
+    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    public class KerbalRenamer : MonoBehaviour
+    {
+        public static KerbalRenamer rInstance = null;
+        public string cultureDescriptor = "Culture";
+        internal Culture[] cultures = { };
 
-        public List<string> originalNames = new List<string> {
-                "Jebediah Kerman",
-                "Bill Kerman",
-                "Bob Kerman",
-                "Valentina Kerman"
-            };
+        public List<string> originalNames = new List<string> 
+        {
+            "Jebediah Kerman",
+            "Bill Kerman",
+            "Bob Kerman",
+            "Valentina Kerman"
+        };
 
-        public static KerbalRenamer Instance {
-	        get {
-				if(rInstance == null) {
-					rInstance = (new GameObject("RenamerContainer")).AddComponent<KerbalRenamer>();
-				}
-	            return rInstance;
-	        }
-	    }
-       
+        public static KerbalRenamer Instance
+        {
+            get
+            {
+                if (rInstance == null)
+                {
+                    rInstance = (new GameObject("RenamerContainer")).AddComponent<KerbalRenamer>();
+                }
+                return rInstance;
+            }
+        }
+
         public void Awake()
         {
             DontDestroyOnLoad(this);
@@ -72,7 +78,7 @@ namespace Renamer {
                 return;
             }
 
-            List<Culture> ctemp = new List<Culture>();            
+            List<Culture> ctemp = new List<Culture>();
             if (data.HasValue("cultureDescriptor"))
             {
                 cultureDescriptor = data.GetValue("cultureDescriptor");
@@ -85,32 +91,31 @@ namespace Renamer {
             }
             cultures = ctemp.ToArray();
 
-
             GameEvents.onKerbalAddComplete.Add(new EventData<ProtoCrewMember>.OnEvent(OnKerbalAdded));
             GameEvents.onGameStateCreated.Add(new EventData<Game>.OnEvent(OnGameCreated));
         }
 
         void OnGameCreated(Game game)
         {
-
         }
 
         public void OnKerbalAdded(ProtoCrewMember kerbal)
-		{
-			LogUtils.Log("OnKerbalAdded called for " + kerbal.name);
-			if (RenamerCustomParams.PreserveOriginal4Enabled) {
-				if (originalNames.Contains(kerbal.name)) {
-					return;
-				}
-			}
+        {
+            LogUtils.Log("OnKerbalAdded called for " + kerbal.name);
+            if (RenamerCustomParams.PreserveOriginal4Enabled)
+            {
+                if (originalNames.Contains(kerbal.name))
+                {
+                    return;
+                }
+            }
             else // see if any of the originals are still around
             {
                 RerollOriginals();
             }
 
             Randomizer.RerollKerbal(ref kerbal, cultures);
-		}
-        
+        }
 
         private void RerollOriginals()
         {
@@ -118,11 +123,10 @@ namespace Renamer {
             {
                 if (HighLogic.CurrentGame?.CrewRoster[originalKerbalName] != null)
                 {
-                    var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];                    
-                    Randomizer.RerollKerbal(ref origKerbal, cultures);                    
+                    var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];
+                    Randomizer.RerollKerbal(ref origKerbal, cultures);
                 }
             }
-        }        
-	}
-
+        }
+    }
 }
