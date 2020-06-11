@@ -24,7 +24,7 @@ namespace Renamer
         [GameParameters.CustomFloatParameterUI("Female Percentage", toolTip = "What percentage of recruits should be female?", autoPersistance = true, asPercentage = true, displayFormat = "N1", minValue = 0.0f, maxValue = 1.0f)]
         public float femalePercent = 0.5f;
         [GameParameters.CustomFloatParameterUI("Badass Percentage", toolTip = "What percentage of recruits should be Badass?", autoPersistance = true, asPercentage = true, displayFormat = "N1", minValue = 0.0f, maxValue = 1.0f)]
-        public float badassPercent = 0.5f;
+        public float badassPercent = 0.1f;
         [GameParameters.CustomParameterUI("Use Bell Curve Method", toolTip = "Use a Bell Curve distribution when rolling stats?", autoPersistance = true)]
         public bool useBellCurveMethod = true;
         [GameParameters.CustomParameterUI("Don't Insult Me", toolTip = "Limits stupidity", autoPersistance = true)]
