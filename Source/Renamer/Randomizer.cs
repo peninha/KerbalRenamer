@@ -51,42 +51,42 @@ namespace Renamer
 
             if (kerbal.type == ProtoCrewMember.KerbalType.Crew || kerbal.type == ProtoCrewMember.KerbalType.Applicant)
             {
-                // generate some new stats
                 if (useBellCurveMethod || dontInsultMe)
                 {
                     kerbal.stupidity = rollStupidity(useBellCurveMethod, dontInsultMe);
                     kerbal.courage = rollCourage(useBellCurveMethod);
-                    kerbal.isBadass = UnityEngine.Random.Range(0.0f, 1.0f) < badassPercent;
+                }
 
-                    float rand = UnityEngine.Random.Range(0.0f, 1.0f);
-                    if (keepRoles)
+                kerbal.isBadass = UnityEngine.Random.Range(0.0f, 1.0f) < badassPercent;
+
+                float traitRoll = UnityEngine.Random.Range(0.0f, 1.0f);
+                if (keepRoles)
+                {
+                    KerbalRoster.SetExperienceTrait(kerbal, kerbal.trait);
+                }
+                else
+                {
+                    if (traitRoll < 0.33f)
                     {
-                        KerbalRoster.SetExperienceTrait(kerbal, kerbal.trait);
+                        KerbalRoster.SetExperienceTrait(kerbal, "Pilot");
+                    }
+                    else if (traitRoll < 0.66f)
+                    {
+                        KerbalRoster.SetExperienceTrait(kerbal, "Engineer");
                     }
                     else
                     {
-                        if (rand < 0.33f)
-                        {
-                            KerbalRoster.SetExperienceTrait(kerbal, "Pilot");
-                        }
-                        else if (rand < 0.66f)
-                        {
-                            KerbalRoster.SetExperienceTrait(kerbal, "Engineer");
-                        }
-                        else
-                        {
-                            KerbalRoster.SetExperienceTrait(kerbal, "Scientist");
-                        }
+                        KerbalRoster.SetExperienceTrait(kerbal, "Scientist");
                     }
+                }
 
-                    if (UnityEngine.Random.Range(0.0f, 1.0f) <= femalePercent)
-                    {
-                        kerbal.gender = ProtoCrewMember.Gender.Female;
-                    }
-                    else
-                    {
-                        kerbal.gender = ProtoCrewMember.Gender.Male;
-                    }
+                if (UnityEngine.Random.Range(0.0f, 1.0f) <= femalePercent)
+                {
+                    kerbal.gender = ProtoCrewMember.Gender.Female;
+                }
+                else
+                {
+                    kerbal.gender = ProtoCrewMember.Gender.Male;
                 }
             }
 
