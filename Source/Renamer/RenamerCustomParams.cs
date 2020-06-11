@@ -21,8 +21,6 @@ namespace Renamer
         public bool preserveOriginals = false;
         [GameParameters.CustomParameterUI("Preserve Original Traits", toolTip = "Set to start with 2 pilots, 1 engineer, and 1 scientist.  Disable to take your chances.", autoPersistance = true)]
         public bool preserveOriginalTraits = true;
-        [GameParameters.CustomParameterUI("Reroll stats", toolTip = "Set to get random stats (courage, stupidity, roles, and gender).", autoPersistance = true)]
-        public bool generateNewStats = false;
         [GameParameters.CustomFloatParameterUI("Female Percentage", toolTip = "What percentage of recruits should be female?", autoPersistance = true, asPercentage = true, displayFormat = "N1", minValue = 0.0f, maxValue = 1.0f)]
         public float femalePercent = 0.5f;
         [GameParameters.CustomFloatParameterUI("Badass Percentage", toolTip = "What percentage of recruits should be Badass?", autoPersistance = true, asPercentage = true, displayFormat = "N1", minValue = 0.0f, maxValue = 1.0f)]
@@ -58,14 +56,6 @@ namespace Renamer
             get
             {
                 return OptionsInstance.preserveOriginalTraits;
-            }
-        }
-
-        public static bool RerollStatsEnabled
-        {
-            get
-            {
-                return OptionsInstance.generateNewStats;
             }
         }
 

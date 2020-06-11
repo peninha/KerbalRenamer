@@ -114,7 +114,7 @@ namespace Renamer
                 RerollOriginals();
             }
 
-            Randomizer.RerollKerbal(ref kerbal, cultures);
+            Randomizer.RerollKerbal(kerbal, cultures);
         }
 
         private void RerollOriginals()
@@ -124,7 +124,7 @@ namespace Renamer
                 if (HighLogic.CurrentGame?.CrewRoster[originalKerbalName] != null)
                 {
                     var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];
-                    Randomizer.RerollKerbal(ref origKerbal, cultures);
+                    Randomizer.RerollKerbal(origKerbal, cultures);
                 }
             }
         }

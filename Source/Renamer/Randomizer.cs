@@ -38,25 +38,25 @@ namespace Renamer
 {
     public class Randomizer
     {
-        public static void RerollKerbal(ref ProtoCrewMember kerbal, Culture[] cultures)
+        public static void RerollKerbal(ProtoCrewMember kerbal, Culture[] cultures)
         {
-            RerollKerbal(ref kerbal, RenamerCustomParams.RerollStatsEnabled, RenamerCustomParams.BellCurveEnabled, RenamerCustomParams.DontInsultMeEnabled,
-                         RenamerCustomParams.GetBadassPercentage, RenamerCustomParams.GetFemalePercentage, cultures, RenamerCustomParams.PreserveOriginalTraitsEnabled);
+            RerollKerbal(kerbal, RenamerCustomParams.BellCurveEnabled, RenamerCustomParams.DontInsultMeEnabled, RenamerCustomParams.GetBadassPercentage,
+                         RenamerCustomParams.GetFemalePercentage, cultures, RenamerCustomParams.PreserveOriginalTraitsEnabled);
         }
 
-        public static void RerollKerbal(ref ProtoCrewMember kerbal, bool generateNewStats, bool useBellCurveMethod, bool dontInsultMe, float badassPercent, float femalePercent, Culture[] cultures, bool keepRoles)
+        public static void RerollKerbal(ProtoCrewMember kerbal, bool useBellCurveMethod, bool dontInsultMe, float badassPercent, float femalePercent, Culture[] cultures, bool keepRoles)
         {
             LogUtils.Log("Rerolling kerbal ", kerbal.name);
-            UnityEngine.Random.InitState(System.DateTime.Now.Millisecond * kerbal.name.GetHashCode());
+            UnityEngine.Random.InitState(DateTime.Now.Millisecond * kerbal.name.GetHashCode());
 
             if (kerbal.type == ProtoCrewMember.KerbalType.Crew || kerbal.type == ProtoCrewMember.KerbalType.Applicant)
             {
                 // generate some new stats
-                if (generateNewStats)
+                if (useBellCurveMethod || dontInsultMe)
                 {
                     kerbal.stupidity = rollStupidity(useBellCurveMethod, dontInsultMe);
                     kerbal.courage = rollCourage(useBellCurveMethod);
-                    kerbal.isBadass = (UnityEngine.Random.Range(0.0f, 1.0f) < badassPercent);
+                    kerbal.isBadass = UnityEngine.Random.Range(0.0f, 1.0f) < badassPercent;
 
                     float rand = UnityEngine.Random.Range(0.0f, 1.0f);
                     if (keepRoles)
@@ -207,16 +207,16 @@ namespace Renamer
         {
             if (useBellCurveMethod)
             {
-                float retval = -0.05f;
-                for (int i = 0; i < 6; i++)
+                float retval = 0;
+                for (int i = 0; i < 5; i++)
                 {
-                    retval += UnityEngine.Random.Range(0.01f, 0.21f);
+                    retval += UnityEngine.Random.Range(0f, 0.2f);
                 }
                 return retval;
             }
             else
             {
-                return UnityEngine.Random.Range(0.0f, 1.0f);
+                return UnityEngine.Random.Range(0f, 1f);
             }
         }
 
@@ -224,14 +224,12 @@ namespace Renamer
         {
             if (useBellCurveMethod)
             {
-                float retval = -0.05f;
-                int end = 6;
-                if (dontInsultMe) { end = 4; }
+                float retval = 0;
+                int end = dontInsultMe ? 3 : 5;
                 for (int i = 0; i < end; i++)
                 {
-                    retval += UnityEngine.Random.Range(0.01f, 0.21f);
+                    retval += UnityEngine.Random.Range(0f, 0.2f);
                 }
-                if (retval < 0.001f) { retval = 0.001f; }
                 return retval;
             }
             else
