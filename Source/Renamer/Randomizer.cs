@@ -33,6 +33,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 namespace Renamer
 {
@@ -90,117 +91,67 @@ namespace Renamer
                 }
             }
 
-            string name = getName(kerbal, cultures);
-
-            LogUtils.Log("Renaming to ", name);
-            if (name.Length > 0)
-            {
-                kerbal.ChangeName(name);
-            }
+            RenameProtoCrewMember(kerbal, cultures);
         }
 
-        public static string getName(ProtoCrewMember c, Culture[] cultures)
+        /// <summary>
+        /// Uses the roulette method to pick a culture from a profile.
+        /// </summary>
+        /// <param name="cultures"></param>
+        /// <returns></returns>
+        public static Culture SelectRandomCulture(Culture[] cultures)
         {
-            string firstName = "";
-            string lastName = "";
+            Dictionary<string, double> wheel = KerbalRenamer.Instance.cultureWheel;
+            double roll = (double) Random.Range(0f, 1f);
 
-            Culture parent = cultures[UnityEngine.Random.Range(0, cultures.Length)];
-            if (c.gender == ProtoCrewMember.Gender.Female)
+            string lastseen = "";
+            foreach (KeyValuePair<string, double> kvp in wheel)
             {
-                if (parent.fnames1.Length > 0)
+                lastseen = kvp.Key;
+                if (roll <= kvp.Value)
                 {
-                    firstName += parent.fnames1[UnityEngine.Random.Range(0, parent.fnames1.Length)];
-                }
-                if (parent.fnames2.Length > 0)
-                {
-                    firstName += parent.fnames2[UnityEngine.Random.Range(0, parent.fnames2.Length)];
-                }
-                if (parent.fnames3.Length > 0)
-                {
-                    firstName += parent.fnames3[UnityEngine.Random.Range(0, parent.fnames3.Length)];
-                }
-            }
-            else
-            {
-                if (parent.mnames1.Length > 0)
-                {
-                    firstName += parent.mnames1[UnityEngine.Random.Range(0, parent.mnames1.Length)];
-                }
-                if (parent.mnames2.Length > 0)
-                {
-                    firstName += parent.mnames2[UnityEngine.Random.Range(0, parent.mnames2.Length)];
-                }
-                if (parent.mnames3.Length > 0)
-                {
-                    firstName += parent.mnames3[UnityEngine.Random.Range(0, parent.mnames3.Length)];
-                }
-            }
-            if (parent.femaleSurnamesExist && c.gender == ProtoCrewMember.Gender.Female)
-            {
-                if (parent.flnames1.Length > 0)
-                {
-                    lastName += parent.flnames1[UnityEngine.Random.Range(0, parent.flnames1.Length)];
-                }
-                if (parent.flnames2.Length > 0)
-                {
-                    lastName += parent.flnames2[UnityEngine.Random.Range(0, parent.flnames2.Length)];
-                }
-                if (parent.flnames3.Length > 0)
-                {
-                    lastName += parent.flnames3[UnityEngine.Random.Range(0, parent.flnames3.Length)];
-                }
-            }
-            else
-            {
-                if (parent.lnames1.Length > 0)
-                {
-                    lastName += parent.lnames1[UnityEngine.Random.Range(0, parent.lnames1.Length)];
-                }
-                if (parent.lnames2.Length > 0)
-                {
-                    lastName += parent.lnames2[UnityEngine.Random.Range(0, parent.lnames2.Length)];
-                }
-                if (parent.lnames3.Length > 0)
-                {
-                    lastName += parent.lnames3[UnityEngine.Random.Range(0, parent.lnames3.Length)];
-                }
-            }
-            if (lastName.Length > 0)
-            {
-                if (firstName.Length > 0)
-                {
-                    if (parent.cultureName.Length > 0)
-                    {
-                        c.flightLog.AddEntryUnique(new FlightLog.Entry(0, KerbalRenamer.Instance.cultureDescriptor, parent.cultureName));
-                    }
-                    return firstName + " " + lastName;
+                    break;
                 }
                 else
                 {
-                    if (parent.cultureName.Length > 0)
-                    {
-                        c.flightLog.AddEntryUnique(new FlightLog.Entry(0, KerbalRenamer.Instance.cultureDescriptor, parent.cultureName));
-                    }
-                    return lastName;
+                    roll -= kvp.Value;
                 }
             }
-            else
+
+            foreach (Culture culture in cultures)
             {
-                // 0 length names should be handled elsewhere.
-                return firstName;
+                if (culture.cultureName == lastseen) return culture;
             }
+            
+            // something went wrong.
+            LogUtils.Log("Something went wrong in culture selection");
+            return cultures[UnityEngine.Random.Range(0, cultures.Length)];
         }
 
-        public static Culture getCultureByName(string name, Culture[] cultures)
+        public static void GenerateRandomName(ProtoCrewMember.Gender gender, ref string culture, ref string name, Culture[] cultures)
         {
-            for (int i = 0; i < cultures.Length; i++)
+            Culture parent = SelectRandomCulture(cultures);
+            name = parent.GenerateRandomName(gender);
+            culture = parent.cultureName;
+        }
+
+        public static void RenameProtoCrewMember(ProtoCrewMember crewMember, Culture[] cultures)
+        {
+            string newname = "";
+            string newculture = "";
+            GenerateRandomName(crewMember.gender, ref newculture, ref newname, cultures);
+
+            if (newculture.Length > 0)
             {
-                if (cultures[i].cultureName == name)
-                {
-                    return cultures[i];
-                }
+                crewMember.flightLog.AddEntryUnique(new FlightLog.Entry(0, KerbalRenamer.Instance.cultureDescriptor,
+                    newculture));
             }
-            return null;
+            
+            LogUtils.Log("Renaming to ", newname);
+            if (newname.Length > 0)
+            {
+                crewMember.ChangeName(newname);
+            }
         }
 
         public static float rollCourage(bool useBellCurveMethod)
