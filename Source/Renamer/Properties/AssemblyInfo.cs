@@ -1,5 +1,5 @@
+#define CIBUILD_disabled
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
@@ -16,5 +16,10 @@ using System.Runtime.CompilerServices;
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
 [assembly: AssemblyVersion ("1.5.0")]
+#if CIBUILD
+[assembly: AssemblyFileVersion("@MAJOR@.@MINOR@.@PATCH@.@BUILD@")]
+#else
+[assembly: AssemblyFileVersion("1.5.0")]
+#endif
 
 [assembly: KSPAssembly("Renamer", 1, 5)]
