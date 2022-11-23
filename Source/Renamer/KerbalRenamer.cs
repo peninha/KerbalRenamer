@@ -65,15 +65,15 @@ namespace Renamer
             "Valentina Kerman"
         };
 
+        /// <summary>
+        /// List of kerbals who need to be renamed later
+        /// </summary>
+        private List<String> pendingRerolls = new List<String>();
+        
         public static KerbalRenamer Instance
         {
             get
             {
-                if (rInstance == null)
-                {
-                    rInstance = (new GameObject("RenamerContainer")).AddComponent<KerbalRenamer>();
-                }
-
                 return rInstance;
             }
         }
@@ -81,6 +81,11 @@ namespace Renamer
         public void Awake()
         {
             DontDestroyOnLoad(this);
+            
+            // Added to check that only one instance of kerbal renamer is running
+            LogUtils.Log($"KerbalRenamer Awake");
+
+            rInstance = this;
 
             ConfigNode data = null;
             foreach (ConfigNode node in GameDatabase.Instance.GetConfigNodes("KERBALRENAMER"))
@@ -145,42 +150,70 @@ namespace Renamer
 
         private void OnKerbalAdded(ProtoCrewMember kerbal)
         {
-            LoadProfile(RenamerCustomParams.ProfileName);
-
-            LogUtils.Log($"OnKerbalAdded called for {kerbal.name} using profile {RenamerCustomParams.ProfileName}");
-            if (RenamerCustomParams.PreserveOriginal4Enabled)
+            // Rewritten to work correctly if called during early stages of scene load
+            
+            // Check if custom parameters are actually available (otherwise they would return default values, we don't want that)
+            if (RenamerCustomParams.Available)
             {
-                if (originalNames.Contains(kerbal.name))
-                {
-                    return;
-                }
+                LoadProfile(RenamerCustomParams.ProfileName);
+                LogUtils.Log($"OnKerbalAdded called for {kerbal.name} using profile {RenamerCustomParams.ProfileName}");
+                Randomizer.RerollKerbal(kerbal, cultures);
             }
             else
             {
-                RerollOriginals();
+                LogUtils.Log($"OnKerbalAdded called for {kerbal.name} - pending reroll");
+
+                // Add an event handler to reroll kerbals later.
+                // Add it only once, even if there are many kerbals who need to be rerolled.
+                if (pendingRerolls.Count == 0)
+                {
+                    GameEvents.onGameStateLoad.Add(new EventData<ConfigNode>.OnEvent(ProcessPendingRerolls));
+                }
+
+                // Remember kerbal name to reroll later
+                pendingRerolls.Add(kerbal.name);
+            }
+        }
+        
+        /// <summary>
+        /// Rerolls kerbals after game state is loaded
+        /// </summary>
+        private void ProcessPendingRerolls(ConfigNode configNode)
+        {
+            LogUtils.Log($"ProcessPendingRerolls");
+
+            // Remove the event handler, as this needs to be done only once
+            GameEvents.onGameStateLoad.Remove(ProcessPendingRerolls);
+
+            if (RenamerCustomParams.Available)
+            {
+                LoadProfile(RenamerCustomParams.ProfileName);
+            }
+            else
+            {
+                // This really should not happen...
+                LogUtils.Log($"Error - RenamerCustomParams not available!");
             }
 
-            Randomizer.RerollKerbal(kerbal, cultures);
-        }
-
-        /// <summary>
-        /// Process the starting 4.
-        /// </summary>
-        /// <remarks>Is fired really early, in fact so early that KSP log states that the kerbal don't exist yet.</remarks>
-        private void RerollOriginals()
-        {
-            if (RenamerCustomParams.PreserveOriginal4Enabled) return;
-
-            LoadProfile(RenamerCustomParams.ProfileName);
-
-            foreach (var originalKerbalName in originalNames)
+            // reroll kerbals who need to be rerolled
+            foreach (var kerbalName in pendingRerolls) 
             {
-                if (HighLogic.CurrentGame?.CrewRoster[originalKerbalName] != null)
+                if (RenamerCustomParams.PreserveOriginal4Enabled && originalNames.Contains(kerbalName)) 
+                {   
+                    // Do nothing for the original 4 if the user wants to keep them
+                }
+                else if (HighLogic.CurrentGame.CrewRoster[kerbalName] != null)
                 {
-                    var origKerbal = HighLogic.CurrentGame.CrewRoster[originalKerbalName];
+                    var origKerbal = HighLogic.CurrentGame.CrewRoster[kerbalName];
                     Randomizer.RerollKerbal(origKerbal, cultures);
                 }
+                else
+                {
+                    LogUtils.Log($"Error - kerbal {kerbalName} not found in CrewRoster!");
+                }            
             }
+
+            pendingRerolls.Clear(); 
         }
 
         /// <summary>

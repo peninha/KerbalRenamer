@@ -68,6 +68,18 @@ namespace Renamer
             }
         }
 
+        /// <summary>
+        /// Check if custom parameters have been loaded by the game
+        /// </summary>
+        public static bool Available 
+        {
+            get 
+            {
+                RenamerCustomParams options = HighLogic.CurrentGame?.Parameters?.CustomParams<RenamerCustomParams>();
+                return (options != null);
+            }
+        }
+
         public static bool PreserveOriginal4Enabled
         {
             get
