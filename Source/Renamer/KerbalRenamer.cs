@@ -117,7 +117,7 @@ namespace Renamer
             // Doesn't appear to be necessary anymore, doesn't hurt to initialize the profile.
             LoadProfile("1951");
 
-            GameEvents.onKerbalAddComplete.Add(new EventData<ProtoCrewMember>.OnEvent(OnKerbalAdded));
+            GameEvents.onKerbalAddComplete.Add(OnKerbalAdded);
         }
 
         public void OnDestroy()
@@ -167,7 +167,7 @@ namespace Renamer
                 // Add it only once, even if there are many kerbals who need to be rerolled.
                 if (pendingRerolls.Count == 0)
                 {
-                    GameEvents.onGameStateLoad.Add(new EventData<ConfigNode>.OnEvent(ProcessPendingRerolls));
+                    GameEvents.onGameStateLoad.Add(ProcessPendingRerolls);
                 }
 
                 // Remember kerbal name to reroll later
